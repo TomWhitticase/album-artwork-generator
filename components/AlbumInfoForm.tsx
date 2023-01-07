@@ -3,9 +3,13 @@ import { IAlbumInfo } from "../types/AlbumInfo";
 
 interface IAlbumInfoFormProps {
   onSubmit: (albumInfo: IAlbumInfo) => void;
+  loading: boolean;
 }
 
-const AlbumInfoForm: React.FC<IAlbumInfoFormProps> = ({ onSubmit }) => {
+const AlbumInfoForm: React.FC<IAlbumInfoFormProps> = ({
+  onSubmit,
+  loading,
+}) => {
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [theme, setTheme] = useState("");
@@ -103,9 +107,10 @@ const AlbumInfoForm: React.FC<IAlbumInfoFormProps> = ({ onSubmit }) => {
       <br />
       <button
         className="py-2 px-4 bg-pink-500 rounded shadow text-white"
+        disabled={loading}
         type="submit"
       >
-        Generate
+        {loading ? "Generating..." : "Generate Artwork"}
       </button>
     </form>
   );

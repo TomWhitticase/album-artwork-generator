@@ -10,15 +10,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const prompt = req.body.prompt;
 
+    // Request 4 images from the OpenAI API
     const response = await openai.createImage({
       prompt,
-      n: 1,
-      size: "1024x1024",
+      n: 4,
+      size: "256x256",
     });
-    const url = response.data.data[0].url;
-    console.log(url);
+    // Get the URLs of the generated images
+    const urls = response.data.data.map((item) => item.url);
 
-    sendSuccessResponse(res, url);
+    sendSuccessResponse(res, urls);
   } catch (error) {
     console.error(error);
     sendErrorResponse(res, error);

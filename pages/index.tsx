@@ -1,18 +1,23 @@
-import Head from "next/head";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { IAlbumInfo } from "../types/AlbumInfo";
 import AlbumInfoForm from "../components/AlbumInfoForm";
-import Image from "next/image";
-import { ClipLoader, GridLoader } from "react-spinners";
-import image from "./api/image";
-import Gallery from "../components/Gallery";
+import { GridLoader } from "react-spinners";
+
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
-  const [imageUrl, setImageUrl] = useState<string>("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const saveImage = (url: string) => {
+    const link = document.createElement("a");
+    link.download = "album-artwork.jpg";
+    link.href = url;
+    link.target = "_blank";
+    link.click();
+  };
 
   //parallax background effect
   useEffect(() => {
@@ -34,7 +39,7 @@ export default function Home() {
 
     try {
       const response = await axios.post("/api/image", data);
-      setImageUrl(response.data);
+      setImageUrls(response.data);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -69,25 +74,40 @@ export default function Home() {
       </div>
       <div
         id="parallax"
-        className="flex flex-wrap items-center justify-center py-4"
+        className="flex flex-col lg:flex-row items-center justify-center"
       >
-        <div className="h-full p-4 w-96 bg-white m-4 shadow-lg">
-          <AlbumInfoForm onSubmit={handleSubmit} />
-        </div>
-        <div id="generate" className="bg-white p-2">
-          {loading ? (
-            <div className="w-[300px] h-[300px] bg-slate-100 flex items-center justify-center">
+        {/* <div className="w-[300px] h-[300px] bg-slate-100 flex items-center justify-center">
               <GridLoader color="#36d7b7" />
-            </div>
-          ) : imageUrl ? (
-            <img src={imageUrl} alt="album artwork" width={500} />
-          ) : (
-            <div className="w-[300px] h-[300px] bg-slate-100 flex items-center justify-center">
-              Generate an album cover
-            </div>
-          )}
+            </div> */}
+        <div className="h-full w-full max-w-[400px] bg-white m-4 p-4 shadow-lg">
+          <AlbumInfoForm onSubmit={handleSubmit} loading={loading} />
+        </div>
+        <div
+          id="generate"
+          className="p-2 flex flex-wrap items-center justify-center gap-8 w-full max-w-[800px]"
+        >
+          {!loading
+            ? imageUrls.map((url, i) => (
+                <img
+                  key={i}
+                  src={url}
+                  onClick={() => saveImage(url)}
+                  alt="album artwork"
+                  width={300}
+                  className="border-8 border-white cursor-pointer"
+                />
+              ))
+            : [0, 1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="w-[300px] h-[300px] bg-slate-100 flex items-center justify-center"
+                >
+                  <GridLoader color="#36d7b7" />
+                </div>
+              ))}
         </div>
       </div>
+
       <div
         id="about"
         className="w-full bg-white flex items-center flex-col justify-center p-8 gap-8 px-4 lg:px-40"
@@ -132,6 +152,5 @@ export default function Home() {
 function generateDallEPrompt(albumInfo: IAlbumInfo): string {
   const { title, genre, theme, mood, colorScheme, requests, artStyle } =
     albumInfo;
-  return `"Generate album artwork for a ${genre} album called "${title}" with the theme of ${title}
-    , a ${mood} mood, a color scheme of ${colorScheme}, and an art style of ${artStyle}. ${requests}"`;
+  return `"Generate album artwork for a ${genre} album called "${title}" with the theme of ${title}, a ${mood} mood, a color scheme of ${colorScheme}, and an art style of ${artStyle}. ${requests}"`;
 }
