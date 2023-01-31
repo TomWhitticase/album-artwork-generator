@@ -88,7 +88,7 @@ const AlbumInfoForm: React.FC<IAlbumInfoFormProps> = ({
       <label htmlFor="art-style">Art Style</label>
       <input
         className="border-black border-2 rounded p-1"
-        placeholder="e.g. photorealistic, hand drawn, oil painting etc"
+        placeholder="e.g. photorealistic, hand drawn"
         type="text"
         id="art-style"
         value={artStyle}
