@@ -152,5 +152,5 @@ export default function Home() {
 function generateDallEPrompt(albumInfo: IAlbumInfo): string {
   const { title, genre, theme, mood, colorScheme, requests, artStyle } =
     albumInfo;
-  return `"Generate album artwork for a ${genre} album called "${title}" with the theme of ${title}, a ${mood} mood, a color scheme of ${colorScheme}, and an art style of ${artStyle}. ${requests}"`;
+  return `"Generate album artwork for a ${genre} album called "${title}" with the theme of ${theme}, a ${mood} mood, a color scheme of ${colorScheme}, and an art style of ${artStyle}. ${requests}"`;
 }
